@@ -1,12 +1,9 @@
 FROM circleci/node:10.14.1-stretch
-#FROM alpine:3.8
 
 # AWS CLI
-RUN sudo apt-get install -y awscli zip && \
-    sudo rm -rf /var/lib/apt/lists/*
-
-#RUN apk add --no-cache \
-#		ca-certificates
+RUN sudo apt-get install -y python-pip zip && \
+  sudo pip install awscli && \
+  sudo rm -rf /var/lib/apt/lists/*
 
 # set up nsswitch.conf for Go's "netgo" implementation (which Docker explicitly uses)
 # - https://github.com/docker/docker-ce/blob/v17.09.0-ce/components/engine/hack/make.sh#L149
