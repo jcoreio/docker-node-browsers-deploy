@@ -1,4 +1,4 @@
-FROM circleci/node:10.14.1-stretch
+FROM circleci/node:${CIRCLE_CI_NODE_VERSION}-stretch
 
 # AWS CLI
 RUN sudo apt-get install -y python-pip zip && \
