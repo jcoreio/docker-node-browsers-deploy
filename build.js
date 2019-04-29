@@ -5,9 +5,9 @@ const {spawn: _spawn} = require('promisify-child-process')
 
 const PROJECT_NAME = 'jcoreio/docker-node-deploy'
 
-const CIRCLE_CI_NODE_VERSIONS = {
-  '8': '8.15.1',
-  '10': '10.15.3',
+const CONTAINER_VERSIONS = {
+  'meteor-node8': {nodeVersion: '8.15.1', meteor: true},
+  'node10': {nodeVersion: '10.15.3', meteor: false},
 }
 
 const srcDir = path.join(__dirname, 'src')
@@ -15,18 +15,20 @@ const {version} = require('./package.json')
 
 async function build() {
   const dockerfileTemplate = await fs.readFile(path.join(srcDir, 'Dockerfile'), 'utf8')
-  for (const nodeVersion in CIRCLE_CI_NODE_VERSIONS) {
-    const tmpDir = path.join(__dirname, 'tmp', `node-${nodeVersion}`)
+  for (const containerVersion in CONTAINER_VERSIONS) {
+    const {nodeVersion, meteor} = CONTAINER_VERSIONS[containerVersion]
+    const tmpDir = path.join(__dirname, 'tmp', containerVersion)
     await fs.emptyDir(tmpDir)
     for (const file of ['docker-entrypoint.sh', 'modprobe.sh']) {
       await fs.copy(path.join(srcDir, file), path.join(tmpDir, file))
     }
-    const dockerfile = dockerfileTemplate.replace('${CIRCLE_CI_NODE_VERSION}',
-      CIRCLE_CI_NODE_VERSIONS[nodeVersion])
+    const dockerfile = dockerfileTemplate
+      .replace('${CIRCLE_CI_NODE_VERSION}', nodeVersion)
+      .replace('${METEOR_INSTALL}', meteor ? 'RUN curl https://install.meteor.com/ | sh' : '')
     await fs.writeFile(path.join(tmpDir, 'Dockerfile'), dockerfile)
     const tags = [
-      `${PROJECT_NAME}:node${nodeVersion}-${version}`,
-      `${PROJECT_NAME}:node${nodeVersion}-latest`,
+      `${PROJECT_NAME}:${containerVersion}-${version}`,
+      `${PROJECT_NAME}:${containerVersion}-latest`,
     ]
 
     const spawn = async (command, args) => {

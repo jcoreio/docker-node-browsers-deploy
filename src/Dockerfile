@@ -1,9 +1,15 @@
 FROM circleci/node:${CIRCLE_CI_NODE_VERSION}-stretch
 
+# Install a text editor in case we need to ssh in and edit files to debug a build
+RUN sudo apt-get update && sudo apt-get install -y vim
+
 # AWS CLI
 RUN sudo apt-get install -y python-pip zip && \
   sudo pip install awscli && \
   sudo rm -rf /var/lib/apt/lists/*
+
+# Some versions of this container include Meteor
+${METEOR_INSTALL}
 
 # set up nsswitch.conf for Go's "netgo" implementation (which Docker explicitly uses)
 # - https://github.com/docker/docker-ce/blob/v17.09.0-ce/components/engine/hack/make.sh#L149
