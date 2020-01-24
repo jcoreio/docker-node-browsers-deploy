@@ -1,4 +1,4 @@
-# Docker Node Deploy
+# Docker Node Browsers Deploy
 
 Container for building Docker images in Circle CI. Contains Docker, Git, and node.js.
 

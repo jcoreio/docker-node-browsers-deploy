@@ -1,4 +1,4 @@
-FROM circleci/node:${CIRCLE_CI_NODE_VERSION}-stretch
+FROM circleci/node:${CIRCLE_CI_NODE_VERSION}-stretch-browsers
 
 # Install a text editor in case we need to ssh in and edit files to debug a build
 RUN sudo apt-get update && sudo apt-get install -y vim
