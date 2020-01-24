@@ -24,7 +24,12 @@ async function build() {
     }
     const dockerfile = dockerfileTemplate
       .replace('${CIRCLE_CI_NODE_VERSION}', nodeVersion)
-      .replace('${METEOR_INSTALL}', meteor ? 'RUN curl https://install.meteor.com/ | sh' : '')
+      .replace('${METEOR_INSTALL}', meteor ? `
+# https://github.com/coreos/bugs/issues/1095#issuecomment-336872867
+RUN sudo apt-get update
+RUN sudo apt-get install -y bsdtar && sudo ln -sf $(which bsdtar) $(which tar)
+RUN curl https://install.meteor.com/ | sh
+` : '')
     await fs.writeFile(path.join(tmpDir, 'Dockerfile'), dockerfile)
     const tags = [
       `${PROJECT_NAME}:${containerVersion}-${version}`,
