@@ -4,7 +4,11 @@ FROM circleci/node:${CIRCLE_CI_NODE_VERSION}-stretch-browsers
 RUN sudo apt-get update && sudo apt-get install -y vim
 
 # AWS CLI
-RUN sudo apt-get install -y python-pip zip && \
+RUN sudo apt-get install -y zip && \
+	# https://stackoverflow.com/a/37531821/200224
+	sudo wget https://bootstrap.pypa.io/get-pip.py && \
+	sudo python get-pip.py && \
+	sudo python3 get-pip.py && \
   sudo pip install awscli && \
   sudo rm -rf /var/lib/apt/lists/*
 

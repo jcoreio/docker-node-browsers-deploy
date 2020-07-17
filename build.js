@@ -3,11 +3,11 @@ const path = require('path')
 const {flatten} = require('lodash')
 const {spawn: _spawn} = require('promisify-child-process')
 
-const PROJECT_NAME = 'jcoreio/docker-node-deploy'
+const PROJECT_NAME = 'jcoreio/docker-node-browsers-deploy'
 
 const CONTAINER_VERSIONS = {
   'meteor-node8': {nodeVersion: '8.15.1', meteor: true},
-  'node10': {nodeVersion: '10.15.3', meteor: false},
+  'node10': {nodeVersion: '10.18.1', meteor: false},
 }
 
 const srcDir = path.join(__dirname, 'src')
